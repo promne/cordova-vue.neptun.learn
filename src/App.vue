@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import { INIT_USER } from '@/store/actions.type'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -68,6 +69,9 @@ export default {
       var links = this.defaultLinks.filter(p => typeof p.auth === 'undefined' || (p.auth === this.isAuthenticated))
       return links
     }
+  },
+  mounted: function () {
+    this.$store.dispatch(INIT_USER)
   }
 }
 </script>
