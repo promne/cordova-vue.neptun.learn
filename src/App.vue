@@ -98,11 +98,10 @@ export default {
     menuLinks: function () {
       var links = this.defaultLinks
 
-      if (typeof this.currentUser.open_games !== 'undefined') {
+      if (this.currentUser.open_games) {
         var gameLinks = this.currentUser.open_games.map(function (g) { return {title: unescape(g.name), icon: 'mdi-battlenet', link: `/game/${g.number}`} })
-        links.push({ title: 'Neptune',
+        links.push({ title: 'Games',
           icon: 'mdi-image',
-          link: '/neptune',
           auth: true,
           children: gameLinks
         })

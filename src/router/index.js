@@ -6,7 +6,7 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '*',
       name: 'home',
       component: () => import('@/views/Home')
     },
@@ -16,9 +16,8 @@ export default new Router({
       component: () => import('@/components/Profile')
     },
     {
-      path: '/neptune',
-      name: 'neptune',
-      component: () => import('@/components/Neptune')
+      path: '/game/:gameId',
+      component: () => import('@/components/Game')
     },
     {
       path: '/login',
