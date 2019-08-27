@@ -40,6 +40,7 @@
 
               <v-list-item-content>
                 <v-list-item-title><span v-html="battle.title"/></v-list-item-title>
+                <v-list-item-subtitle>{{ battle.subTitle }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
@@ -57,6 +58,7 @@
 
               <v-list-item-content>
                 <v-list-item-title>{{ menuLink.title }}</v-list-item-title>
+                <v-list-item-subtitle>{{ menuLink.subTitle }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </template>
@@ -91,7 +93,7 @@ export default {
     defaultLinks: function () {
       return [
         { title: 'Home', icon: 'mdi-home', link: '/' },
-        { title: this.currentUser.user_email, icon: 'account_box', link: '/profile', auth: true },
+        { title: 'Profile', subTitle: this.currentUser.user_email, icon: 'account_box', link: '/profile', auth: true },
         { title: 'Login', icon: 'mdi-key', link: '/login', auth: false }
       ]
     },
