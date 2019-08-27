@@ -17,6 +17,9 @@ const NeptuneApi = {
   initPlayer () {
     return this.post('mrequest/init_player', {type: 'init_player'})
   },
+  getUniverseReport (gameId) {
+    return this.post('trequest/order', { type: 'order', order: 'full_universe_report', game_number: gameId, version: '' })
+  },
   post (url, formData) {
     var bodyFormData = new FormData()
     for (var k in formData) {

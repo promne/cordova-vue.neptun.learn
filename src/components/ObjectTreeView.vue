@@ -1,9 +1,7 @@
 <template>
-  <v-treeview :items="gameDataArray" ></v-treeview>
+  <v-treeview :items="dataArray" />
 </template>
-
 <script>
-import { mapGetters } from 'vuex'
 
 var convertObjectToItems = function (object, counter = 0) {
   var items = []
@@ -35,21 +33,12 @@ var convertObjectToItems = function (object, counter = 0) {
 }
 
 export default {
-  data: function () {
-    return {
-    }
-  },
+  props: ['value'],
   computed: {
-    ...mapGetters(['currentUser', 'isAuthenticated']),
-    gameId: function () {
-      return this.$route.params.gameId
-    },
-    gameDataArray: function () {
-      var gameData = this.currentUser && this.currentUser.open_games ? this.currentUser.open_games.find(i => i.number === this.gameId) : {}
-      return convertObjectToItems(gameData)
+    dataArray: function () {
+      console.log(this.value)
+      return convertObjectToItems(this.value)
     }
-  },
-  methods: {
   }
 }
 </script>

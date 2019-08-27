@@ -1,11 +1,12 @@
-import { LOGIN, LOGOUT, INIT_USER } from './actions.type'
+import { LOGIN, LOGOUT, INIT_USER, FETCH_GAME_REPORT } from './actions.type'
 import NeptuneApi from '@/service/neptune.api'
-import { SET_ERROR, SET_USER, CLEAR_USER } from './mutations.type'
+import { SET_ERROR, SET_USER, CLEAR_USER, SET_GAME_REPORT } from './mutations.type'
 
 const state = {
   errors: null,
   user: {},
-  isAuthenticated: false
+  isAuthenticated: false,
+  universeReports: {}
 }
 
 const getters = {
@@ -14,6 +15,14 @@ const getters = {
   },
   isAuthenticated (state) {
     return state.isAuthenticated
+  },
+  getUserGameSettingById: (state) => (id) => {
+    return state.user.open_games ? state.user.open_games.find(i => i.number === id) : {}
+  },
+  getCurrentGameData: (state) => (id) => {
+    console.log(id)
+    console.log(state.universeReports)
+    return state.universeReports[id] || {}
   }
 }
 
@@ -31,6 +40,23 @@ const actions = {
         })
         .catch(({response}) => {
           commit(SET_ERROR, response.data.errors)
+          reject(response)
+        })
+    })
+  },
+  [FETCH_GAME_REPORT] (context, gameId) {
+    return new Promise((resolve, reject) => {
+      NeptuneApi.getUniverseReport(gameId)
+        .then(data => {
+          if (data.event === 'order:full_universe') {
+            context.commit(SET_GAME_REPORT, { gameId: gameId, report: data.report })
+            resolve(data[1])
+          } else {
+            reject(data)
+          }
+        })
+        .catch(({response}) => {
+          context.commit(SET_ERROR, response.data.errors)
           reject(response)
         })
     })
@@ -79,6 +105,9 @@ const mutations = {
   [CLEAR_USER] (state) {
     state.isAuthenticated = false
     state.user = {}
+  },
+  [SET_GAME_REPORT] (state, { gameId, report }) {
+    state.universeReports[gameId] = report
   }
 }
 

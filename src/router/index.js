@@ -17,7 +17,7 @@ export default new Router({
     },
     {
       path: '/game/:gameId',
-      component: () => import('@/components/Game')
+      component: () => import('@/views/Game')
     },
     {
       path: '/login',
