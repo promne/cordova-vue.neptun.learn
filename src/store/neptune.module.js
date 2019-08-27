@@ -1,6 +1,7 @@
 import { LOGIN, LOGOUT, INIT_USER, FETCH_GAME_REPORT } from './actions.type'
 import NeptuneApi from '@/service/neptune.api'
 import { SET_ERROR, SET_USER, CLEAR_USER, SET_GAME_REPORT } from './mutations.type'
+import Vue from 'vue'
 
 const state = {
   errors: null,
@@ -107,7 +108,7 @@ const mutations = {
     state.user = {}
   },
   [SET_GAME_REPORT] (state, { gameId, report }) {
-    state.universeReports[gameId] = report
+    Vue.set(state.universeReports, gameId, report)
   }
 }
 
