@@ -18,6 +18,7 @@
 
 	"extensions": [
 		"dbaeumer.vscode-eslint",
-		"octref.vetur"
+		"octref.vetur",
+		"eamodio.gitlens"
 	]
 }
