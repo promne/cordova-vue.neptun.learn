@@ -2,6 +2,7 @@
     <v-card>
         <v-card-title class="text-center justify-center py-6">
             <h1><span v-html="gameSettings.name"/></h1>
+             <v-btn @click="refreshGameData">Refresh</v-btn>
         </v-card-title>
         <v-tabs
             grow
@@ -10,16 +11,22 @@
                 <v-icon>mdi-settings</v-icon>
                 Settings
             </v-tab>
+            <v-tab-item>
+                <ObjectTreeView :value="gameSettings"/>
+            </v-tab-item>
             <v-tab>
                 <v-icon>mdi-database</v-icon>
                 Data
             </v-tab>
             <v-tab-item>
-                <ObjectTreeView :value="gameSettings"/>
-            </v-tab-item>
-            <v-tab-item>
-                <v-btn @click="refreshGameData">Refresh</v-btn>
                 <ObjectTreeView :value="gameReport"/>
+            </v-tab-item>
+            <v-tab>
+                <v-icon>mdi-map</v-icon>
+                Map
+            </v-tab>
+            <v-tab-item>
+                <UniverseMap :value="gameReport"/>
             </v-tab-item>
         </v-tabs>
     </v-card>
@@ -31,7 +38,8 @@ import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    'ObjectTreeView': () => import('@/components/ObjectTreeView')
+    'ObjectTreeView': () => import('@/components/ObjectTreeView'),
+    'UniverseMap': () => import('@/components/game/UniverseMap')
   },
   computed: {
     ...mapGetters([

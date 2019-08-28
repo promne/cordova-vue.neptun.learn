@@ -21,8 +21,6 @@ const getters = {
     return state.user.open_games ? state.user.open_games.find(i => i.number === id) : {}
   },
   getCurrentGameData: (state) => (id) => {
-    console.log(id)
-    console.log(state.universeReports)
     return state.universeReports[id] || {}
   }
 }

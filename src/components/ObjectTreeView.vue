@@ -36,7 +36,6 @@ export default {
   props: ['value'],
   computed: {
     dataArray: function () {
-      console.log(this.value)
       return convertObjectToItems(this.value)
     }
   }
