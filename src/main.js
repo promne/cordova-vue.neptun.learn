@@ -8,10 +8,13 @@ import router from './router'
 import store from './store'
 
 import App from './App'
+import _ from 'lodash'
 
 Vue.config.productionTip = false
 
 Vue.use(VueKonva)
+
+Object.defineProperty(Vue.prototype, '$_', { value: _ })
 
 /* eslint-disable no-new */
 new Vue({
