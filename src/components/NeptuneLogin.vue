@@ -38,7 +38,7 @@ export default {
       this.$store.dispatch(LOGIN, {alias: this.username, password: this.password})
         .then(_ => {
           console.log('routing to home')
-          self.$router.push('/')
+          self.$router.push('home')
         })
         .catch(e => {
           this.password = ''
