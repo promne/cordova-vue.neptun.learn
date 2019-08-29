@@ -68,7 +68,9 @@ export default {
     refreshGameData () {
       this.$store.dispatch(FETCH_GAME_REPORT, this.gameId)
     }
+  },
+  mounted: function () {
+    !this.$_.isEmpty(this.gameReport) || this.refreshGameData()
   }
-
 }
 </script>
