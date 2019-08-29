@@ -20,6 +20,9 @@ const NeptuneApi = {
   getUniverseReport (gameId) {
     return this.post('trequest/order', { type: 'order', order: 'full_universe_report', game_number: gameId, version: '' })
   },
+  getUniverseIntel (gameId) {
+    return this.post('trequest/intel_data', { type: 'intel_data', game_number: gameId, version: '' })
+  },
   post (url, formData) {
     var bodyFormData = new FormData()
     for (var k in formData) {

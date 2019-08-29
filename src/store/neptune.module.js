@@ -1,13 +1,14 @@
-import { LOGIN, LOGOUT, INIT_USER, FETCH_GAME_REPORT } from './actions.type'
+import { LOGIN, LOGOUT, INIT_USER, FETCH_GAME_REPORT, FETCH_GAME_INTEL } from './actions.type'
 import NeptuneApi from '@/service/neptune.api'
-import { SET_ERROR, SET_USER, CLEAR_USER, SET_GAME_REPORT } from './mutations.type'
+import { SET_ERROR, SET_USER, CLEAR_USER, SET_GAME_REPORT, SET_GAME_INTEL } from './mutations.type'
 import Vue from 'vue'
 
 const state = {
   errors: null,
   user: {},
   isAuthenticated: false,
-  universeReports: {}
+  universeReports: {},
+  universeIntels: {}
 }
 
 const getters = {
@@ -22,6 +23,9 @@ const getters = {
   },
   getCurrentGameData: (state) => (id) => {
     return state.universeReports[id] || {}
+  },
+  getCurrentGameIntel: (state) => (id) => {
+    return state.universeIntels[id] || {}
   }
 }
 
@@ -49,6 +53,23 @@ const actions = {
         .then(data => {
           if (data.event === 'order:full_universe') {
             context.commit(SET_GAME_REPORT, { gameId: gameId, report: data.report })
+            resolve(data[1])
+          } else {
+            reject(data)
+          }
+        })
+        .catch(({response}) => {
+          context.commit(SET_ERROR, response.data.errors)
+          reject(response)
+        })
+    })
+  },
+  [FETCH_GAME_INTEL] (context, gameId) {
+    return new Promise((resolve, reject) => {
+      NeptuneApi.getUniverseIntel(gameId)
+        .then(data => {
+          if (data.event === 'order:intel_data') {
+            context.commit(SET_GAME_INTEL, { gameId: gameId, report: data.report })
             resolve(data[1])
           } else {
             reject(data)
@@ -107,6 +128,9 @@ const mutations = {
   },
   [SET_GAME_REPORT] (state, { gameId, report }) {
     Vue.set(state.universeReports, gameId, report)
+  },
+  [SET_GAME_INTEL] (state, { gameId, report }) {
+    Vue.set(state.universeIntels, gameId, report)
   }
 }
 
