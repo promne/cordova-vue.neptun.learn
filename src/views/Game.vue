@@ -22,6 +22,13 @@
                 <ObjectTreeView :value="gameReport"/>
             </v-tab-item>
             <v-tab>
+                <v-icon>mdi-account-multiple</v-icon>
+                Overview
+            </v-tab>
+            <v-tab-item>
+                <Players :value="gameReport"/>
+            </v-tab-item>
+            <v-tab>
                 <v-icon>mdi-map</v-icon>
                 Map
             </v-tab>
@@ -39,6 +46,7 @@ import { mapGetters } from 'vuex'
 export default {
   components: {
     'ObjectTreeView': () => import('@/components/ObjectTreeView'),
+    'Players': () => import('@/components/game/Players'),
     'UniverseMap': () => import('@/components/game/UniverseMap')
   },
   computed: {
