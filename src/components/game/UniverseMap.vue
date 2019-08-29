@@ -1,7 +1,27 @@
 <template>
-  <v-stage :config="configStage" ref="konvaStage">
+  <v-stage :config="configStage" ref="konvaStage" expand @wheel="zoom">
     <v-layer ref="starLayer">
-      <v-circle v-for="star in stars" :key="star.id" :config="star" @mouseleave="starTooltip.visible = false" @mouseover="showStarTooltip(star)"/>
+      <template v-for="(star, index) in stars" >
+        <v-circle :key="`${index}-star`" :config="star" @mouseleave="starTooltip.visible = false" @mouseover="showStarTooltip(star)" />
+        <v-text :key="`${index}-star-name`" :config="{
+            ...starTooltip,
+            x: star.x - 50,
+            width: 100,
+            y: star.y + 5,
+            align: 'center',
+            text: star.data.n,
+            visible: view.pixelsPerLightYear > 200
+          }" />
+        <v-text :key="`${index}-star-infrastructure`" :config="{
+            ...starTooltip,
+            x: star.x - 50,
+            width: 100,
+            y: star.y - 25,
+            align: 'center',
+            text: `${star.data.e} ${star.data.i} ${star.data.s}`,
+            visible: view.pixelsPerLightYear > 300
+          }" />
+      </template>
     </v-layer>
     <v-layer ref="starTooltipLayer">
       <v-text :config="starTooltip"/>
@@ -28,7 +48,8 @@ export default {
     return {
       configStage: {
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
+        draggable: true
       },
       starTooltip: {
         fontFamily: 'Calibri',
@@ -38,6 +59,9 @@ export default {
         fill: 'black',
         alpha: 0.75,
         visible: false
+      },
+      view: {
+        pixelsPerLightYear: 500
       }
     }
   },
@@ -46,10 +70,14 @@ export default {
       this.starTooltip = {
         ...this.starTooltip,
         x: star.x + 5,
-        y: star.y + 5,
-        text: star.data.n,
+        y: star.y - 15,
+        fontSize: 13,
+        text: `Resources: ${star.data.r}/${star.data.nr}`,
         visible: true
       }
+    },
+    zoom (event) {
+      this.view.pixelsPerLightYear -= (3 * event.evt.deltaY)
     }
   },
   computed: {
@@ -70,12 +98,12 @@ export default {
         },
         {minx: Number.POSITIVE_INFINITY, miny: Number.POSITIVE_INFINITY, maxx: Number.NEGATIVE_INFINITY, maxy: Number.NEGATIVE_INFINITY})
 
-      const scalingFactor = Math.min(this.configStage.width / Math.abs(universeDimensions.maxx - universeDimensions.minx),
-        this.configStage.height / Math.abs(universeDimensions.maxy - universeDimensions.miny))
+      // const scalingFactor = Math.min(this.configStage.width / Math.abs(universeDimensions.maxx - universeDimensions.minx),
+      //   this.configStage.height / Math.abs(universeDimensions.maxy - universeDimensions.miny))
 
       const convertPosToCanvas = (point) => {
-        return { x: Math.round(Math.abs(Number(point.x) - universeDimensions.minx) * scalingFactor),
-          y: Math.round(Math.abs(Number(point.y) - universeDimensions.miny) * scalingFactor)
+        return { x: Math.round(Math.abs(Number(point.x) - universeDimensions.minx) * this.view.pixelsPerLightYear),
+          y: Math.round(Math.abs(Number(point.y) - universeDimensions.miny) * this.view.pixelsPerLightYear)
         }
       }
 
@@ -83,7 +111,7 @@ export default {
         return {
           ...convertPosToCanvas(star),
           data: star,
-          radius: 5,
+          radius: 8,
           fill: colorArray[star.puid]
         }
       })
