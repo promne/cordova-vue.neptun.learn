@@ -19,21 +19,21 @@
                 Data
             </v-tab>
             <v-tab-item>
-                <ObjectTreeView :value="gameReport"/>
+                <ObjectTreeView :value="gameData"/>
             </v-tab-item>
             <v-tab>
                 <v-icon>mdi-account-multiple</v-icon>
                 Overview
             </v-tab>
             <v-tab-item>
-                <Players :value="gameReport"/>
+                <Players :value="gameData"/>
             </v-tab-item>
             <v-tab>
                 <v-icon>mdi-map</v-icon>
                 Map
             </v-tab>
             <v-tab-item>
-                <UniverseMap :value="gameReport"/>
+                <UniverseMap :value="gameData.report"/>
             </v-tab-item>
         </v-tabs>
     </v-card>
@@ -42,6 +42,7 @@
 <script>
 import { FETCH_GAME_REPORT } from '@/store/actions.type'
 import { mapGetters } from 'vuex'
+import { FETCH_GAME_INTEL } from '../store/actions.type'
 
 export default {
   components: {
@@ -52,7 +53,8 @@ export default {
   computed: {
     ...mapGetters([
       'getUserGameSettingById',
-      'getCurrentGameData'
+      'getCurrentGameData',
+      'getCurrentGameIntel'
     ]),
     gameId () {
       return this.$route.params.gameId
@@ -60,13 +62,17 @@ export default {
     gameSettings () {
       return this.getUserGameSettingById(this.gameId)
     },
-    gameReport () {
-      return this.getCurrentGameData(this.gameId)
+    gameData () {
+      return {
+        report: this.getCurrentGameData(this.gameId),
+        intel: this.getCurrentGameIntel(this.gameId)
+      }
     }
   },
   methods: {
     refreshGameData () {
       this.$store.dispatch(FETCH_GAME_REPORT, this.gameId)
+      this.$store.dispatch(FETCH_GAME_INTEL, this.gameId)
     }
   },
   mounted: function () {

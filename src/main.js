@@ -10,9 +10,12 @@ import store from './store'
 import App from './App'
 import _ from 'lodash'
 
-Vue.config.productionTip = false
+import HighchartsVue from 'highcharts-vue'
+Vue.use(HighchartsVue)
 
 Vue.use(VueKonva)
+
+Vue.config.productionTip = false
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 

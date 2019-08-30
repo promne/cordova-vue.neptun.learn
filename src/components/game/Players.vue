@@ -6,23 +6,36 @@
     class="elevation-1"
     hide-default-footer
     dense
+    item-key="uid"
+    show-expand
   >
 
-      <template v-slot:body="{ items }">
-      <tbody>
-        <tr v-for="item in items" :key="item.name">
-          <template v-for="property in headers">
-            <td :key="property.value" v-bind:style="getColorStyle(item, property)">{{ resolve(property.value, item) }}</td>
-          </template>
-        </tr>
-      </tbody>
+    <template v-slot:item="{ item, isExpanded, expand }">
+      <tr :class="{expanded: isExpanded, expanded__row: isExpanded}" >
+        <td>
+          <v-btn small icon @click="expand(!isExpanded)">
+            <v-icon small v-if="isExpanded">mdi-chevron-up</v-icon>
+            <v-icon small v-else>mdi-chevron-down</v-icon>
+          </v-btn>
+        </td>
+        <template v-for="property in headers">
+          <td :key="property.value" v-bind:style="getColorStyle(item, property)">{{ resolve(property.value, item) }}</td>
+        </template>
+      </tr>
     </template>
 
+    <!-- expand item/row -->
+    <template v-slot:expanded-item="{ item, headers }">
+      <tr class="expanded expanded__content">
+        <td :colspan="headers.length">
+          <highcharts class="chart" :options="chartOptions(item.uid)"/>
+        </td>
+      </tr>
+    </template>
   </v-data-table>
 </template>
 
 <script>
-
 export default {
   props: ['value'],
   data () {
@@ -72,14 +85,84 @@ export default {
     }
   },
   computed: {
+    chartOptions () {
+      return playerId => {
+        const historyData = this.$_.sortBy(
+          Object.values(this.value.intel.stats),
+          ['tick']
+        )
+        const dataMapping = [
+          { text: 'Propulsion', value: 'ht', playerValue: 'tech.propulsion.level' },
+          { text: 'Terraforming', value: 'tt', playerValue: 'tech.terraforming.level' },
+          { text: 'Research', value: 'gt', playerValue: 'tech.research.level' },
+          { text: 'Weapons', value: 'wt', playerValue: 'tech.weapons.level' },
+          { text: 'Banking', value: 'bt', playerValue: 'tech.banking.level' },
+          { text: 'Manufacturing', value: 'mt', playerValue: 'tech.manufacturing.level' }
+        ]
+
+        const series = dataMapping.map(mapping => {
+          let data = historyData.map((i) => {
+            const intel = this.$_.find(i.players, {'uid': playerId})
+            return [
+              i.tick,
+              intel[mapping.value]
+            ]
+          })
+          if (mapping.playerValue) {
+            const playerData = this.$_.find(this.value.report.players, {'uid': playerId})
+            data.push([this.value.report.tick, this.resolve(mapping.playerValue, playerData)])
+          }
+          return {
+            name: mapping.text,
+            data: data
+          }
+        })
+
+        return {
+          series: series,
+          plotOptions: {
+            spline: {
+              marker: {
+                enabled: false
+              }
+            }
+          }
+        }
+      }
+    },
     players () {
-      const usersData = Object.values(this.value.players || {})
+      const usersData = Object.values(this.value.report.players || {})
 
       return usersData.map((player) => {
+        const historyData = this.$_.sortBy(
+          Object.values(this.value.intel.stats),
+          ['tick']
+        ).map((i) => {
+          const intel = this.$_.find(i.players, {'uid': player.uid})
+          return [
+            i.tick,
+            intel.sh,
+            intel.wt
+          ]
+        })
+        historyData.push(
+          [
+            this.value.report.tick,
+            player.total_strength,
+            player.tech.weapons.level
+          ]
+        )
+
+        const chartData = [
+          ['Tick', 'Ships', 'Weapons'],
+          ...historyData
+        ]
+
         return {
           ...player,
           ships_production: player.total_industry * (player.tech.manufacturing.level + 5),
-          money_production: (player.total_economy * 10) + (player.tech.banking.level * 75)
+          money_production: (player.total_economy * 10) + (player.tech.banking.level * 75),
+          history: chartData
         }
       })
     }
