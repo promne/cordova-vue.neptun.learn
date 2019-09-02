@@ -30,3 +30,17 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## Screenshots
+
+Login
+![Login](screenshots/login.png)
+
+Games menu
+![Menu](screenshots/games_menu.png)
+
+Players overview
+![Menu](screenshots/overview.png)
+
+Data mining
+![Menu](screenshots/data_mining.png)
