@@ -29,6 +29,13 @@
                 <Players :value="gameData"/>
             </v-tab-item>
             <v-tab>
+                <v-icon>mdi-bug-check</v-icon>
+                Data Mining
+            </v-tab>
+            <v-tab-item>
+                <SimpleDataMining :value="gameData"/>
+            </v-tab-item>
+            <v-tab>
                 <v-icon>mdi-map</v-icon>
                 Map
             </v-tab>
@@ -48,6 +55,7 @@ export default {
   components: {
     'ObjectTreeView': () => import('@/components/ObjectTreeView'),
     'Players': () => import('@/components/game/Players'),
+    'SimpleDataMining': () => import('@/components/game/SimpleDataMining'),
     'UniverseMap': () => import('@/components/game/UniverseMap')
   },
   computed: {
