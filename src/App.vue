@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app permanent>
+    <v-navigation-drawer app permanent  expand-on-hover>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">
