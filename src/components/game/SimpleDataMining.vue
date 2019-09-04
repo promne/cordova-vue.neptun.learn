@@ -24,7 +24,39 @@ export default {
   },
   computed: {
     info () {
-      return {'technology': this.userTech}
+      return {
+        'technology': this.userTech,
+        'infrastructure': this.empireInfrastructure
+      }
+    },
+    empireInfrastructure () {
+      return Object.values(this.value.report.players).map((player) => {
+        const stars = Object.values(this.value.report.stars).filter((s) => {
+          return s.puid === player.uid
+        })
+        let infraChanges = []
+
+        const industry = this.$_.sum(stars.map(s => s.i))
+        if (industry > player.total_industry) {
+          infraChanges.push(`Industry ${player.total_industry} -> ${industry}`)
+        }
+
+        const economy = this.$_.sum(stars.map(s => s.e))
+        if (economy > player.total_economy) {
+          infraChanges.push(`Economy ${player.total_economy} -> ${economy}`)
+        }
+
+        const science = this.$_.sum(stars.map(s => s.s))
+        if (science > player.total_science) {
+          infraChanges.push(`Science ${player.total_science} -> ${science}`)
+        }
+
+        return infraChanges.length === 0 ? undefined : {
+          title: player.alias,
+          subtitle: infraChanges.join(', ')
+        }
+      })
+        .filter(o => typeof o !== 'undefined')
     },
     userTech () {
       const rep = Object.values(this.value.report.players).map((player) => {
